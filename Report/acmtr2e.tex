@@ -3,7 +3,14 @@
 % $Header: acmtr.tex,v 1.5 2/14/96 11:07:57 boyland Exp $
 
 \documentclass[hyperref]{acmtrans2e}
- \usepackage{url}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+
+
+
+
+\graphicspath{ {./images/} }
 %&t&{\tt #}&
 %&v&\verb|#|&
 
@@ -45,11 +52,21 @@ camera-ready copy for these journals.
 
 \section{Introduction}
 There are more and more projects that uses live streaming and social media power to help and safe feral cats. Some of them are meant to control the population in the area \cite{LAPS:2015}, other focus on raising awareness about feral cats, spaying and neutering importance \cite{TinyKittens:2015} or just to increase changes of finding a new home for homeless cats and kittens \cite{CritterRoom:2015}.
+\begin{wrapfigure}[13]{r}{0.5\textwidth}
+\centering
+    \includegraphics[width=0.48\textwidth]{bistro}
+  \caption{CatFi product used by a cat.}
+  \label{fig:bistro}
+\end{wrapfigure}
 
-People are also more interested in health and safety of their own pets. Lower prices of video technologies and smarthone popularity helped to create various apps for controlling your pet lifestyle. \cite{CatFi:2015} created an automatic feeder with cat identification system and connected it to the smartphone app. It allows owner to supervise the amount of dry food and water his cats are consuming everyday, to receive alarms in case of abnormalities and even spy on them while eating. \cite{PiP:2013} app is designated to help people find their lost cats and dogs. According to American Human Society, almost 3.5 million pets are lost each year and about 80\% of dogs and 98\% of cats are never re-united with their families. The authors of the smarthone app allows the owners to made profiles for their pets (including pictures) and in case the pet is missing, you launch the "alarm" on that pet, together with last seen location. If anyone finds a homeless animal, he may send the photo of it to the PiP app, which automatically try to match one of the lost pets with found pet. 
-Right now, Fujifilm company introduced Auto Dog / Cat Detection function in some of their cameras, that allows to  
+People are also more interested in health and safety of their own pets. Lower prices of video technologies and smarthone popularity helped to create various apps for controlling your pet lifestyle. \cite{CatFi:2015} created an automatic feeder with cat identification system and connected it to the smartphone app. It allows owner to supervise the amount of dry food and water his cats are consuming everyday, to receive alarms in case of abnormalities and even spy on them while eating. 
+
+The PiP \cite{PiP:2013} app is designated to help people find their lost cats and dogs. According to American Human Society, almost 3.5 million pets are lost each year and about 80\% of dogs and 98\% of cats are never re-united with their families. The authors of the smarthone app allows the owners to made profiles for their pets (including pictures) and in case the pet is missing, you launch the "alarm" on that pet, together with last seen location. If anyone finds a homeless animal, he may send the photo of it to the PiP app, which automatically try to match one of the lost pets with found pet. 
+
+Increasing number of pets' photographies also encouraged camera producers to implement appropriate support for it in their devices. Right now, Fujifilm company introduced Auto Dog / Cat Detection function \cite{FujiFilm:2009} in some of their cameras that allows to automatically detect pet's face on the image and put auto-focus on it. 
  
 \subsection{Problem description}
+Almost all of the applications and initiatives described in previous section already use or would benefit from the cats detection and/or identification. In this research I would like to focus on topic of cat detection in images. The main interest is on the use case of detecting cats presence in shots from live cameras and streams. Such images are characterized by  diversified, often bad lighting settings, with possible presence of another animals or human beings. I will perform a comparison of existing solutions and propose own framework that deals with this problem.
 
 \section{The state of the art}
 commeercial solutions
