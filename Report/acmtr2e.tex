@@ -59,7 +59,7 @@ There are more and more projects that uses live streaming and social media power
   \label{fig:bistro}
 \end{wrapfigure}
 
-People are also more interested in health and safety of their own pets. Lower prices of video technologies and smarthone popularity helped to create various apps for controlling your pet lifestyle. \cite{CatFi:2015} created an automatic feeder with cat identification system and connected it to the smartphone app. It allows owner to supervise the amount of dry food and water his cats are consuming everyday, to receive alarms in case of abnormalities and even spy on them while eating. 
+People are also more interested in health and safety of their own pets. Lower prices of video technologies and smarthone popularity helped to create various apps for controlling your pet lifestyle. \cite{CatFi:2015} created an automatic feeder with cat identification system and connected it to the smartphone app (product can be seen in fig. \ref{fig:bistro}. It allows owner to supervise the amount of dry food and water his cats are consuming everyday, to receive alarms in case of abnormalities and even spy on them while eating. 
 
 The PiP \cite{PiP:2013} app is designated to help people find their lost cats and dogs. According to American Human Society, almost 3.5 million pets are lost each year and about 80\% of dogs and 98\% of cats are never re-united with their families. The authors of the smarthone app allows the owners to made profiles for their pets (including pictures) and in case the pet is missing, you launch the "alarm" on that pet, together with last seen location. If anyone finds a homeless animal, he may send the photo of it to the PiP app, which automatically try to match one of the lost pets with found pet. 
 
@@ -99,20 +99,35 @@ Another interesting project was performed by \cite{edges:2011}. They tried to co
 
 Authors decided to use four direction features as an input for the classifier. In order to speed-up the process, classification of an image window was hierarchical - if coarse classifier did not detect a sign of face in the window, it was automatically rejected and not send to more detailed and feature-rich fine classifier. 
 
-The results are very promising. As described in \ref{fig:roc_edges}, with the average recall on 90\%, the false positive count is around 20. Although the FPC may seem high (the sample size was 400, with 200 of non-animal pictures), it is still on user-acceptable level. What is more important, the processing time was only 245ms on ARM9 device with 166MHz core. It is impressive result, especially because this solution turned out to be also very robust to illumination changes. Authors measured how color and intensity fluctuation caused by illumination changes influence the recall rate. Intensity changes didn't cause the recall rate to drop under 80\% even on very high intensity values. With 50\% color fluctuation recall rate still oscillate between 80\%-90\%. 
+The results are very promising. As described in fig. \ref{fig:roc_edges}, with the average recall on 90\%, the false positive count is around 20. Although the FPC may seem high (the sample size was 400, with 200 of non-animal pictures), it is still on user-acceptable level. What is more important, the processing time was only 245ms on ARM9 device with 166MHz core. It is impressive result, especially because this solution turned out to be also very robust to illumination changes. Authors measured how color and intensity fluctuation caused by illumination changes influence the recall rate. Intensity changes didn't cause the recall rate to drop under 80\% even on very high intensity values. With 50\% color fluctuation recall rate still oscillate between 80\%-90\%. 
 
 Although the results are not perfect (usually recall rate do not exceed 90\%), short processing time allows to use this algorithm in real-time cases, with may be important case with live streaming observation. This solution can be used as a part of pet-identification algorithm, that informs appropriate person when the cat appears in the camera (e.g. if it is known it is pregnant and needs to be caught and checked) and in such cases time is always a crucial value. It could be an interesting experiment to see if a little bit of power efficiency (i.e. better processing unit) could significantly improve the recall rate.
 
 \subsection{Stationary features and cat detection}
 
 \subsection{Shape and texture features for cat face detection}
-The solution presented in \cite{shape:2008} is the only one with existing implementation available on-line for testing 
+The solution presented in \cite{shape:2008} is the only one with existing available implementation. Also, as part of it, the on-line interface was provide for testing \cite{demo:2013}. Authors of \cite{shape:2008} decided, that both texture and shape are important features of cat face detection. Their solution has two steps - in first, they create separately trained shape and texture detector, both based on Haar-like features. As a second step they are jointly training fusion classifier (joint shape and texture). Both shape and texture classifier were trained on differently normalized data. Their features are based on oriented gradients.
 
+\begin{wrapfigure}[16]{r}{0.5\textwidth}
+\centering
+    \includegraphics[width=0.48\textwidth]{roc_shape}
+  \caption{ROC curves achieved as a result of \protect\cite{shape:2008}.}
+  \label{fig:roc_shape}
+\end{wrapfigure}
 
+Important part of that study was creating a database of 10 000 annotated cat pictures \cite{base:2008} (annotations of 9 points in the cat face, like ears triangles, nose, mouth). This pictures will be the part of this research dataset.
 
-it is important that such algorithm is robust to pose variation and illumination level.
+The results of that study are presented in fig. \ref{fig:roc_shape}. The recall rate oscillate around 90\% with 100 FPC for the joint texture and shape detector. Because huge focus of \cite{shape:2008} was on feature engineering and comparing their features with different standard approaches, authors also made a direct comparison, using Pascal 2007 data set. They claim that Average Precision (AP) of their approach is 0.364, when best reported method has AP equalled to 0.24. 
+
+The study seems to find interesting and quite straight forward method of detecting cats face. Coming from human face detection, they adjusted their feature choice with respect to differences appearing in cat face and then tested different type of gradient features to picked the most suitable one for this aim. However, it should be noted that this article is 7 years old and probably some of the studies presented in previous sections may have better results, but it is hard to estimate, as they are using different databases for testing.
+
 \subsection{Summation}
 \section{Custom framework}
+shape - comparision of different approaches
+
+fujifilm - photo restrictions
+
+it is important that such algorithm is robust to pose variation and illumination level.
 \subsection{Problem analysis}
 \subsection{Proposed method}
 \subsubsection{Features}
