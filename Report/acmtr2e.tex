@@ -71,9 +71,9 @@ Almost all of the applications and initiatives described in previous section alr
 \section{The state of the art}
 Reliable comparison of existing software for detecting cats in pictures is hard to performed. It is caused by a few factors:
 \begin{itemize}
-\item \textbf{black-box algorithms} - many algorithms, that claim to have high accuracy, are part of the hardware product \cite{CatFi:2015} or closed-source app \cite{PiP:2013}. This way it is impossible to make a theoretical comparison of the algorithms and usually significantly hampers possibility of performing experiments with test data, as the products' interfaces are not adjusted to bulk operations. 
-\item \textbf{high diversity of use cases} - although there are a lot of studies focusing on cat face detection, usually the classification or testing environmental does not check robustness of the algorithm in typical real-time scenarios. The classification is e.g. made as cat vs still life \cite{features:2007,edges:2011} or as cat/dog breed detection \cite{breed:2012}.
-\item \textbf{different test sets} - even for algorithms with similar use cases, e.g. cat vs still life, different test set are in use to estimate the accuracy of algorithm, which makes it significantly harder to perform direct comparisons. Usually articles use their own data sets \cite{breed:2012,features:2007,edges:2011} and only some of them compare to standard data bases, like Pascal 2007 cats database \cite{breed:2012}. 
+\item~\textbf{black-box algorithms} - many algorithms, that claim to have high accuracy, are part of the hardware product \cite{CatFi:2015} or closed-source app \cite{PiP:2013}. This way it is impossible to make a theoretical comparison of the algorithms and usually significantly hampers possibility of performing experiments with test data, as the products' interfaces are not adjusted to bulk operations. 
+\item~\textbf{high diversity of use cases} - although there are a lot of studies focusing on cat face detection, usually the classification or testing environmental does not check robustness of the algorithm in typical real-time scenarios. The classification is e.g. made as cat vs still life \cite{features:2007,edges:2011} or as cat/dog breed detection \cite{breed:2012}.
+\item~\textbf{different test sets} - even for algorithms with similar use cases, e.g. cat vs still life, different test set are in use to estimate the accuracy of algorithm, which makes it significantly harder to perform direct comparisons. Usually articles use their own data sets \cite{breed:2012,features:2007,edges:2011} and only some of them compare to standard data bases, like Pascal 2007 cats database \cite{breed:2012}. 
 \end{itemize}
 
 As the main idea of this research is to find an algorithm that will allow for highly accurate detection of cat faces in the pictures, only articles presenting "cat vs still life" classification will be taken under consideration.
@@ -148,6 +148,21 @@ problem in this article (cat detection in live streams), probably the study desc
 The main difficulty in comparing various methods of cat face detection is using different databases with different sizes (ranging from 400 to a million) and different non-cat data. From all the studies, only the one described in sec. \ref{sec:google} did have a database containing human faces or other animals. Interesting test was performed by an artists(!) group Shinseungback Kimyonghun \cite{vs:2013}. They used Kittydar \cite{demo:2013}, the application based on algorithm described in sec. \ref{sec:demo} and OpenCV face detection algorithm to parse pictures of humans and cats. They ended up with 200 images, half of them with humans recognized by Kittydar as cats and half of them with cats recognized by OpenCV as humans. Part of their results is shown in figure \ref{fig:cat_vs_human}.
 
 \section{Problem analysis}
+This section is meant to describe the properties of algorithm suitable for cat detection. It will be started with recalling of expected algorithm applications:
+\begin{itemize}
+\item~\textbf{be first part of cat identification system} - as such, it should have low false rejection rate. High false acceptance is allowed, as it would be filtered by identification subsystem.
+\item~\textbf{work in poor light settings} - The live stream takes place in different locations - house, forests, gardens, often 24/7, and there may be situation when no artificial light is provided. The algorithm should be as robust as possible to light variance.
+\item~\textbf{distinguish between cats and cat-like, humans, other animals} - a lot of current studies does not take under consideration that human faces or other animals may be the part of background. It is important to prepare features so that not too many false acceptance are caused by another beings (although, as mentioned above, false acceptance ratio is not the most important statistic).
+\end{itemize}
+\subsection{Algorithm properties}
+With these applications in mind, one can summarize it with list of algorithm properties:
+\begin{itemize}
+\item~robust to light/pose variation 
+\item~as low as possible false rejection count
+\item~false acceptance count may be high
+\item~additional focus on distinguishing between cats and other living creatures
+\end{itemize}
+\subsection{Implementation considerations}
 \section{Experiments}
 \subsection{Data set}
 shape - comparision of different approaches
