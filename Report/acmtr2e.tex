@@ -6,6 +6,7 @@
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{wrapfig}
+\usepackage{subcaption}
 
 
 
@@ -26,16 +27,11 @@
 \title{Detection of cats in images}
 \author{ANNA MARIA WALACH (s121540) \\Technical University of Denmark\\02238 Biometric Systems}
 \begin{abstract}
-The \LaTeX\ {\tt acmtrans} document style formats articles in 
-the style of the ACM transactions.  Users who have prepared their
-document with \LaTeX\ can, with very little effort, produce
-camera-ready copy for these journals.  
-%Then the ACM production department
-%will re-typeset from scratch anyway, introducing typographical errors.
+More and more attention is focused on feral and wild animals, providing them with medical care, food, checking their safety. It is possible with live streams and cams, that allows to increase awareness of thousands of people, but also make life of people taking care of those animals significantly easier, by being able to constantly monitor the status of pupils. Possibility of automatic detection and recognition of animals in such video signals could significantly increase ability to reliable counting of populations or checking for medical care needs. This research is performing comparison of current methods in the field and applies open source algorithm to simple date to estimate the robustness of out-of-the-box implementation.
 \end{abstract}
 
-\category{D.2.7}{Software Engineering}{Distribution and Main\-ten\-ance}%
-[documentation]
+\category{I.5.4}{Pattern Recognition}{Applications}%
+[computer vision]
 
 \category{H.4.0}{Information Systems Applications}{General}
 
@@ -99,7 +95,7 @@ Authors decided to use four direction features as an input for the classifier. I
 
 The results are very promising. As described in fig. \ref{fig:roc_edges}, with the average recall on 90\%, the false positive count is around 20. Although the FPC may seem high (the sample size was 400, with 200 of non-animal pictures), it is still on user-acceptable level. What is more important, the processing time was only 245ms on ARM9 device with 166MHz core. It is impressive result, especially because this solution turned out to be also very robust to illumination changes. Authors measured how color and intensity fluctuation caused by illumination changes influence the recall rate. Intensity changes didn't cause the recall rate to drop under 80\% even on very high intensity values. With 50\% color fluctuation recall rate still oscillate between 80\%-90\%. 
 
-Although the results are not perfect (usually recall rate do not exceed 90\%), short processing time allows to use this algorithm in real-time cases, with may be important case with live streaming observation. This solution can be used as a part of pet-identification algorithm, that informs appropriate person when the cat appears in the camera (e.g. if it is known it is pregnant and needs to be caught and checked) and in such cases time is always a crucial value. It could be an interesting experiment to see if a little bit of power efficiency (i.e. better processing unit) could significantly improve the recall rate.
+Although the results are not perfect (usually recall rate do not exceed 90\%), short processing time allows to use this algorithm in real-time cases, which may be important case with live streaming observation. This solution can be used as a part of pet-identification algorithm, that informs appropriate person when the cat appears in the camera (e.g. if it is known it is pregnant and needs to be caught and checked) and in such cases time is always a crucial value. It could be an interesting experiment to see if a little bit of power efficiency (i.e. better processing unit) could significantly improve the recall rate.
 
 \subsection{Shape and texture features for cat face detection}
 \label{sec:demo}
@@ -193,7 +189,7 @@ The experiments will be performed using Python interface of OpenCV library.
 \subsection{Tested algorithms}
 Algorithms, that will be tested in the experiments, are classifiers based on Haar-like features. Two approaches will be tested:
 \begin{itemize}
-\item~\emph{predefined cascade classifier} - OpenCV offers an existing, pre-trained frontal cat face classifier. 
+\item~\emph{predefined cascade classifier} - OpenCV offers two existing, pre-trained frontal cat face classifiers. 
 \item~\emph{trained cascade classifier} - OpenCV offers possibility of self-training the classifier with the data. 
 \end{itemize}
 \subsection{Classifier training}
@@ -205,10 +201,126 @@ Following properties of classifier (and it's influence on accuracy) will be test
 \end{itemize}
 Feature type (Haar or LBP - local binary patterns \cite{lbp:2007}) won't be considered as a changing property, because LBP usually has worse results (although is also faster to learn). Number of positive and negative samples is constrained by out of memory exception on values only around 300-500 images, depending on rest of the factors, so also cannot be accuracy influencing factor (as it is already small). Boosting classifier is Gentle AdaBoost (used in some of the articles in previous section).
 
-\subsection{Data set}
-The data set 
-fujifilm - photo restrictions
+\subsection{Training data set}
+The positive data set contains 800 photos of kittens from database introduced in \cite{shape:2008}. The negative data set has 800 photos of house interiors from SUN database \cite{sun:2015}.
 
+\subsection{Testing}
+\begin{figure}
+\centering
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{02}
+\end{subfigure}%
+~~
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{01}
+\end{subfigure}%
+~~
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{lost}
+\end{subfigure}
+\caption{Images used for testing the classifiers - from left to right Picture 1, 2 and 3.}
+\label{fig:test}
+\end{figure}
+Because each of resulting classifier will have predefined accuracy, the method of validation will be based on testing each classifier with three images(fig. \ref{fig:test}), that do not appear in training set, and subjectively estimating the results with scale consisting of 6 values:
+\begin{itemize}
+\item ~\emph{0} - no part of cat has been found
+\item ~\emph{1} - some parts of cat have been found, less than 20\% found areas belongs to cat
+\item ~\emph{2} - some parts of cat have been found, between 20-50\% found areas belongs to cat
+\item ~\emph{3} - some parts of cat have been found, between 50-80\% found areas belongs to cat
+\item ~\emph{4} - more than 80\% found areas belongs to cat
+\item ~\emph{5} - all found areas belongs to cat
+\end{itemize}
+\subsection{Experiment - predefined cascades}
+As a first experiment, two predefined cascade classifiers from OpenCV were taken - \emph{haarcascade\_frontalcatface} and \emph{haarcascade\_frontalcatface\_extended}. The difference between the is that standard one is using only basic set of Haar features, while extended use all of them. 
+
+Results of experiment are presented in tab.\ref{tab:pre}. Although average accuracy of standard classifier seems to be higher than extended, it is caused by number of detected areas. Extended classifier apparently has higher activation threshold, which is causing rather not detecting the cat than making a mistake, but all the detected areas are always on the cat body/face. 
+\begin{table}
+
+\centering
+\begin{tabular}{| c | c | c | c | c |}
+   \hline
+   Cascade & Picture 1 & Picture 2 & Picture 3 & Average no. of areas  \\ \hline
+   Standard & 3 & 5 & 4& 16-21 \\ \hline
+   Extended & 0 & 0 & 5 & 1 \\  \hline
+\end{tabular}
+\caption{Results of testing the quality of predefined cascades}
+\label{tab:pre}
+\end{table}
+
+\subsection{Experiment - trained cascade}
+The second experiment will show difference and possibilities of simply classifier' training. The images used for testing the classifiers were only changed to the grey scale and hasn't been processed expect for that. The training sample size are:
+\begin{itemize}
+\item~ 300 positive, 500 negative for basic features
+\item ~250 positive, 350 negative for core features
+\item ~150 positive, 250 negative for all features
+\end{itemize}
+The recall is always around 99\%.
+
+The results are presented in tab. \ref{tab:trained}. It can be observed, that the highest average evaluations are for classifiers with FAR around 0.1-0.2, with 10 stages and basic or core set of features (e.g. fig. \ref{fig:02B}). When classifier is searching for all features, a lot more areas are found, that are usually not even part of carts.
+\begin{table}
+\centering
+\begin{tabular}{| c | c | c | c | c | c |}
+   \hline
+   Cascade & Picture 1 & Picture 2 & Picture 3 & Average & Average no. of areas  \\ \hline
+   0.1B1 & 1 & 2 & 1 & 1.5 	& 25-75 \\ \hline
+   0.1C1 & 3 & 4 & 1 & 2.3 	& 12-70 \\  \hline
+   0.1A1 & 1 & 2 & 3 & 2 	& 4-13 \\  \hline
+   0.1B5 & 4 & 4 & 1 & 3	& 16-45 \\ \hline
+   0.1C5 & 3 & 3 & 4 & 3.3	& 30-75 \\  \hline
+   0.1A5 & 2 & 3 & 1 & 2	& 113-130 \\  \hline
+   0.1B10 & 0 & 5 & 5 & 3.3	& 0-2 \\ \hline
+   0.1C10 & 2 & 5 & 5 & 4	& 2-8 \\  \hline
+   0.1A10 & 5 & 3 & 5 & 4.3	& 2-25 \\  \hline
+   0.2B1 & 3 & 3 & 1 & 2.3	& 10-59 \\ \hline
+   0.2C1 & 3 & 3 & 1 & 2.3	& 8-68 \\  \hline
+   0.2A1 & 2 & 5 & 3 & 3.3	& 1-11 \\  \hline
+   0.2B5 & 4 & 4 & 2 & 3.3	& 47-89 \\ \hline
+   0.2C5 & 3 & 4 & 3 & 3.3	& 57-93 \\  \hline
+   0.2A5 & 1 & 2 & 2 & 1.6	& 97-148 \\  \hline
+  \textbf{ 0.2B10} & 4 & 4 & 5 & 4.3	& 8-19 \\ \hline
+   \textbf{0.2C10} & 4 & 4 & 5 & 4.3	& 5-21 \\  \hline
+   0.2A10 & 2 & 3 & 5 & 3.3	& 5-25 \\  \hline
+   0.4B1 & 4 & 2 & 1 & 2.3	& 7-55 \\ \hline
+   0.4C1 & 3 & 3 & 1 & 2.3	& 7-50 \\  \hline
+   0.4A1 & 2 & 3 & 4 & 3	& 3-7 \\  \hline
+   0.4B5 & 2 & 4 & 3 & 3	& 84-122 \\ \hline
+   0.4C5 & 2 & 3 & 2 & 2.3	& 115-129 \\  \hline
+   0.4A5 & 2 & 3 & 3 & 	2.6	& 87-134 \\  \hline
+   0.4B10 & 3 & 4 & 2 & 3	& 28-54 \\ \hline
+   0.4C10 & 4 & 4 & 2 &	3.3	& 28-78 \\  \hline
+   0.4A10 & 2 & 3 & 2 & 2.3	& 75-123 \\  \hline
+   
+\end{tabular}
+\caption{Results from self-trained classifiers. In the classifier name, the first number means maximal false acceptance rate at each stage, the letter - feature set (basic, core, all) and the last number - number of stages.}
+\label{tab:trained}
+\end{table}
+
+\begin{figure}
+\centering
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{cascadexml1}
+\end{subfigure}%
+~~
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{cascadexml2}
+\end{subfigure}%
+~~
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{cascadexml3}
+\end{subfigure}
+\caption{Results of testing classifer 0.2B10.}
+\label{fig:02B}
+\end{figure}
+\section{Discussion}
+Although the classifiers were not able to detect cat face/body as one rectangle, smoothing the result should result in satisfying output. Probably preparing dedicated machine for training and increasing training set sizes (especially negative training set) would make algorithm more robust to different backgrounds.
+\section{Conclusions}
+Experiments have given interesting, but also expected results. Too high or too low false acceptance rate is causing over or underfitting. The number of stages is important part of algorithm and should be around 10. The feature set is important attribute, but not all of the Haar features are required for accurate cat detection. The classifiers can be trained easily to detect cats with satisfying precision. Previously describe articles (especially \cite{lions:2006} and this experiments are showing, that it is possible to train classifier based on Haar-like features to be a valuable tool for detecting cats on photos with different light setting and even slightly robust to pose. 
 \section{Bibliography}
 \bibliographystyle{acmtrans}
 \bibliography{acmtr}
