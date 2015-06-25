@@ -72,11 +72,11 @@ Almost all of the applications and initiatives described in previous section alr
 Reliable comparison of existing software for detecting cats in pictures is hard to performed. It is caused by a few factors:
 \begin{itemize}
 \item~\textbf{black-box algorithms} - many algorithms, that claim to have high accuracy, are part of the hardware product \cite{CatFi:2015} or closed-source app \cite{PiP:2013}. This way it is impossible to make a theoretical comparison of the algorithms and usually significantly hampers possibility of performing experiments with test data, as the products' interfaces are not adjusted to bulk operations. 
-\item~\textbf{high diversity of use cases} - although there are a lot of studies focusing on cat face detection, usually the classification or testing environmental does not check robustness of the algorithm in typical real-time scenarios. The classification is e.g. made as cat vs still life \cite{features:2007,edges:2011} or as cat/dog breed detection \cite{breed:2012}.
-\item~\textbf{different test sets} - even for algorithms with similar use cases, e.g. cat vs still life, different test set are in use to estimate the accuracy of algorithm, which makes it significantly harder to perform direct comparisons. Usually articles use their own data sets \cite{breed:2012,features:2007,edges:2011} and only some of them compare to standard data bases, like Pascal 2007 cats database \cite{breed:2012}. 
+\item~\textbf{high diversity of use cases} - although there are a lot of studies focusing on cat face detection, usually the classification or testing environmental does not check robustness of the algorithm in typical real-time scenarios. The classification is e.g. made as cat vs. still life \cite{features:2007,edges:2011} or as cat/dog breed detection \cite{breed:2012}.
+\item~\textbf{different test sets} - even for algorithms with similar use cases, e.g. cat vs. still life, different test set are in use to estimate the accuracy of algorithm, which makes it significantly harder to perform direct comparisons. Usually articles use their own data sets \cite{breed:2012,features:2007,edges:2011} and only some of them compare to standard data bases, like Pascal 2007 cats database \cite{breed:2012}. 
 \end{itemize}
 
-As the main idea of this research is to find an algorithm that will allow for highly accurate detection of cat faces in the pictures, only articles presenting "cat vs still life" classification will be taken under consideration.
+As the main idea of this research is to find an algorithm that will allow for highly accurate detection of cat faces in the pictures, only articles presenting "cat vs. still life" classification will be taken under consideration.
 
 \subsection{Unsupervised image categorization}
 \label{sec:google}
@@ -84,7 +84,7 @@ One of the more interesting approaches to this problem was presented in \cite{go
 
 However, the most interesting part of \cite{google:2012} for this research is that after performing face-detection experiment, authors tried to used trained classifiers to detect cats. The results are very promising - the random guess had 64.8\% chance, while this algorithm was able to detect cats with 74.8\% accuracy.
 
-This algorithm and use of deep learning networks seems to be a promising technique for classification of images categories, however seemed to be lacking needed accuracy for binary classification (cat vs not-cat). 
+This algorithm and use of deep learning networks seems to be a promising technique for classification of images categories, however seemed to be lacking needed accuracy for binary classification (cat vs. not-cat). 
 \subsection{Pet detection method for digital camera}
 \label{sec:camera}
 
@@ -133,6 +133,23 @@ The results of that study for the head-belly detection task are presented in fig
 
 Summing up, that novel approach seems to be very effective, but the images were mostly focusing on cat and still life cases, so it is hard to estimate the efficiency of this study in e.g. forest live streaming. Also, that study, similar to previous one described, is quite old if we take under consideration how fast machine learning is developing in last years, so it would probably be an interesting project to revise those ideas and try to apply them to modern approaches. 
 
+\subsection{Detecting and tracking lions in videos}
+\label{sec:lions}
+Very promising results and approaches are presented in study \cite{lions:2006}. Authors are trying to create a tool for detecting the lion face in video footage, track it and based on the behaviour, add simple description (e.g. \emph{"lioness walking towards camera, lies down on ground"}). 
+
+They are using Haag-like features, first presented in \cite{viola:2001}. During the studies, they tested that broader Haag-like feature set, like the one introduced in \cite{better:2002}, may strongly increase accuracy of the algorithm. Then AdaBoost was used for finding the best classifier.
+\begin{figure}[h]
+\centering
+    \includegraphics[width=1\textwidth]{roc_lions}
+  \caption{(left) ROC curve for lion face training using 680 positive and 1000 negative images; (right) Outline of the learning process focused on the decrease of false alarms compared to the number of necessary single Haar-like features
+used to achieve this reduction, as described in \protect\cite{lions:2006}.}
+  \label{fig:roc_lions}
+\end{figure}
+
+The result is tree classifier, trained to recognize frontal lion face. Then authors are using additional techniques to track the lion face movement, even when the pose is different (not frontal), but this is unfortunately out of scope of this project. However, what is interesting, is the final ROC curve, presented in fig. \ref{fig:roc_lions}. The recall is equalled to 93\% with false acceptance rate at the level of $10^{-4}$\%. 	
+
+That study is offering effective solution to the problem described in this research. With satisfying level of accuracy and implementation based on standard solution (\cite{viola:2001}), even though the article is fairly old (9 years), it is probably the most promising technique. 
+
 \subsection{Discussion}
 
 Described articles are presenting different approaches to the same problem, with focus on different factors (accuracy, efficiency, performance). In regards to the main 
@@ -140,10 +157,10 @@ Described articles are presenting different approaches to the same problem, with
 \centering
     \includegraphics[width=0.48\textwidth]{cat_vs_human}
 \centering
-  \caption{First two rows - human recognized as cats by \protect\cite{demo:2013}. Last two rows - cats recognized as human by OpenCV face detection algorithm}
+  \caption{First two rows - human recognized as cats by \protect\cite{demo:2013}. Last two rows - cats recognized as human by OpenCV \protect\cite{cv:2015} face detection algorithm}
   \label{fig:cat_vs_human}
 \end{wrapfigure}
-problem in this article (cat detection in live streams), probably the study described in section \ref{sec:camera} is the best approach. It is the only study that perform actual experiments focused on illumination invariance. It is hard to estimate robustness of algorithm depending on pose variation, because none of the study actually focus on that. Although everyone are mentioning that cat detection is harder than human detection because of much greater pose possibilities, no tests are performed to check the robustness of algorithm to it.
+problem in this article (cat detection in live streams), probably the studies described in section \ref{sec:camera} and \ref{sec:lions} are the best approaches. Those are the only studies that perform actual experiments focused on illumination invariance and/or live video sapmles. It is hard to estimate robustness of algorithm depending on pose variation, because none of the study actually focus on that, usually omitting this problem in some way (i.e. tracking techniques in \cite{lions:2006}. Although everyone are mentioning that cat detection is harder than human detection because of much greater pose possibilities, not many tests are performed to check the robustness of algorithm to it, usually assuming that the classifier is trained only for the frontal view.
 
 The main difficulty in comparing various methods of cat face detection is using different databases with different sizes (ranging from 400 to a million) and different non-cat data. From all the studies, only the one described in sec. \ref{sec:google} did have a database containing human faces or other animals. Interesting test was performed by an artists(!) group Shinseungback Kimyonghun \cite{vs:2013}. They used Kittydar \cite{demo:2013}, the application based on algorithm described in sec. \ref{sec:demo} and OpenCV face detection algorithm to parse pictures of humans and cats. They ended up with 200 images, half of them with humans recognized by Kittydar as cats and half of them with cats recognized by OpenCV as humans. Part of their results is shown in figure \ref{fig:cat_vs_human}.
 
@@ -162,19 +179,37 @@ With these applications in mind, one can summarize it with list of algorithm pro
 \item~false acceptance count may be high
 \item~additional focus on distinguishing between cats and other living creatures
 \end{itemize}
-\subsection{Implementation considerations}
+Following considerations from \cite{shape:2008}, it is good idea to discuss different methods that can be used in the solution:
+\begin{itemize}
+\item ~\textbf{sliding window detection vs. part based detection} - there are two different ways of detecting objects in the images. Sliding window scan all possible sub-windows in the image and try to classify each of them (does it have a face in it?). Part-based detects simple part of the objects (e.g. for human face recognition it could be eyes and mouth) and try to assemble them, following geometric constraints. Both of those methods are used, with successes, in human face detections. Probably sliding window would be a better method for this use case, more robust to illumination changes.
+\item ~\textbf{image features vs. gradient features} - image features are for example intensity values or PCA/wavelet coefficients. On the other side, gradient features are extracted from oriented gradients or the edge map. Both of this approaches demonstrated satisfying results in previous studies. Although image features are said to be less robust to illumination changes, they're successfully used in detection from video \cite{lions:2006}, so it is hard to decide one way or another before further experiments.
+\end{itemize}
 \section{Experiments}
-\subsection{Data set}
-shape - comparision of different approaches
+The experiments will be performed using Python interface of OpenCV library.
 
+\textbf{OpenCV} \cite{cv:2015} is an open source computer vision framework, developed from 1999, right now maintained by Itseez company. The library is cross-platform and has C, C++, Java, Python and even Matlab/Octave interfaces. It is realease under BSD licence, which means it is free for both academic and commercial use. OpenCV is written in C++ and put strong focus on computational efficiency, supporting multi-core and GPU processing. It offers broad range of applications from computer vision, like facial recognition system, motion tracking, 2D/3D feature toolkits and also some machine learning techniques: different type of classifiers (SVM, Bayes, Random Forest, ANN) or boosting methods (boosting, gradient boosting). It has large user community (around 50 thousand) and is considered to be the best free tool for computer vision. 
+
+\textbf{Python} is general-purpose, high-level programming language. It support object oriented programming and has elements of imperative, functional and procedural style. Python has dynamic typing and garbage collector. There are many different implementations of Python. The most popular and reliable one are also free and open-source. It can be packaged to be used on almost all the platforms. It's characteristic is simplicity and high reliability. Python has a lot of frameworks and libraries that allows it to be useful in many different fields, e.g. Django (web development), SciPy, SciKit (scientific and machine learning), OpenStack (system administration). Also, many existing framework are ported or have interfaces in Python (like OpenCV).
+\subsection{Tested algorithms}
+Algorithms, that will be tested in the experiments, are classifiers based on Haar-like features. Two approaches will be tested:
+\begin{itemize}
+\item~\emph{predefined cascade classifier} - OpenCV offers an existing, pre-trained frontal cat face classifier. 
+\item~\emph{trained cascade classifier} - OpenCV offers possibility of self-training the classifier with the data. 
+\end{itemize}
+\subsection{Classifier training}
+Following properties of classifier (and it's influence on accuracy) will be tested during the experiment:
+\begin{itemize}
+\item~feature \emph{size} (how many Haar feature are taken under consideration) - tested values will be: basic (only upright features), core, all (upright + 45 degree rotated feature set)
+\item~\emph{maximal false acceptance rate} (per stage).
+\item~\emph{number of stages} (tested values: 1, 5, 10).
+\end{itemize}
+Feature type (Haar or LBP - local binary patterns \cite{lbp:2007}) won't be considered as a changing property, because LBP usually has worse results (although is also faster to learn). Number of positive and negative samples is constrained by out of memory exception on values only around 300-500 images, depending on rest of the factors, so also cannot be accuracy influencing factor (as it is already small). Boosting classifier is Gentle AdaBoost (used in some of the articles in previous section).
+
+\subsection{Data set}
+The data set 
 fujifilm - photo restrictions
 
-it is important that such algorithm is robust to pose variation and illumination level.
-\subsection{Proposed method}
-\subsubsection{Features}
-\subsubsection{Classifier}
-
-\subsection{Bibliography}
+\section{Bibliography}
 \bibliographystyle{acmtrans}
 \bibliography{acmtr}
 \begin{received}
